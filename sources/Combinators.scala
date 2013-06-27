@@ -4,17 +4,17 @@ object Combinators {
     new Parser[(T1, T2)] {
       override def apply(input: String) =
         p1(input) match {
-          case Success(v1, nextInput) =>
+          case ParseSuccess(v1, nextInput) =>
             p2(nextInput) match {
-              case Success(v2, restInput) =>
-                Success((v1, v2), restInput)
+              case ParseSuccess(v2, restInput) =>
+                ParseSuccess((v1, v2), restInput)
 
-              case Failure(errorMessage, restInput) =>
-                Failure(errorMessage, input)
+              case ParseFaliure(errorMessage, restInput) =>
+                ParseFaliure(errorMessage, input)
             }
 
-          case Failure(errorMessage, restInput) =>
-            Failure(errorMessage, input)
+          case ParseFaliure(errorMessage, restInput) =>
+            ParseFaliure(errorMessage, input)
         }
     }
 
@@ -22,16 +22,16 @@ object Combinators {
     new Parser[List[T]] {
       override def apply(input: String) =
         p(input) match {
-          case Success(v, nextInput) =>
+          case ParseSuccess(v, nextInput) =>
             apply(nextInput) match {
-              case Success(vs, restInput) =>
-                Success(v :: vs, restInput)
+              case ParseSuccess(vs, restInput) =>
+                ParseSuccess(v :: vs, restInput)
 
-              case Failure(_, restInput) =>
-                Success(List(), restInput)
+              case ParseFaliure(_, restInput) =>
+                ParseSuccess(List(), restInput)
             }
 
-          case Failure(_, restInput) => Success(List(), restInput)
+          case ParseFaliure(_, restInput) => ParseSuccess(List(), restInput)
         }
     }
 
@@ -39,8 +39,8 @@ object Combinators {
     new Parser[T2] {
       override def apply(input: String) =
         p(input) match {
-          case Success(value, restInput) => Success(f(value), restInput)
-          case Failure(message, restInput) => Failure(message, restInput)
+          case ParseSuccess(value, restInput) => ParseSuccess(f(value), restInput)
+          case ParseFaliure(message, restInput) => ParseFaliure(message, restInput)
         }
     }
 }

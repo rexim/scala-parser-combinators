@@ -5,9 +5,9 @@ class RegexParser(r: Regex) extends Parser[Regex.Match] {
     val source = input.dropWhile(_.isSpaceChar)
     r.findPrefixMatchOf(source) match {
       case Some(matched) =>
-        Success(matched, source.drop(matched.end))
+        ParseSuccess(matched, source.drop(matched.end))
       case None =>
-        Failure("fail", input)
+        ParseFaliure("fail", input)
     }
   }
 }
