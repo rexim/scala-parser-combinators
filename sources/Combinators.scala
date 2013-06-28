@@ -9,12 +9,12 @@ object Combinators {
               case ParseSuccess(v2, restInput) =>
                 ParseSuccess((v1, v2), restInput)
 
-              case ParseFaliure(errorMessage, restInput) =>
-                ParseFaliure(errorMessage, input)
+              case ParseFailure(errorMessage, restInput) =>
+                ParseFailure(errorMessage, input)
             }
 
-          case ParseFaliure(errorMessage, restInput) =>
-            ParseFaliure(errorMessage, input)
+          case ParseFailure(errorMessage, restInput) =>
+            ParseFailure(errorMessage, input)
         }
     }
 
@@ -27,11 +27,11 @@ object Combinators {
               case ParseSuccess(vs, restInput) =>
                 ParseSuccess(v :: vs, restInput)
 
-              case ParseFaliure(_, restInput) =>
+              case ParseFailure(_, restInput) =>
                 ParseSuccess(List(), restInput)
             }
 
-          case ParseFaliure(_, restInput) => ParseSuccess(List(), restInput)
+          case ParseFailure(_, restInput) => ParseSuccess(List(), restInput)
         }
     }
 
@@ -40,7 +40,7 @@ object Combinators {
       override def apply(input: String) =
         p(input) match {
           case ParseSuccess(value, restInput) => ParseSuccess(f(value), restInput)
-          case ParseFaliure(message, restInput) => ParseFaliure(message, restInput)
+          case ParseFailure(message, restInput) => ParseFailure(message, restInput)
         }
     }
 }
