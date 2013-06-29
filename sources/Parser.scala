@@ -1,7 +1,7 @@
 import scala.language.postfixOps
 
 trait Parser[+T] extends (String => ParseResult[T]) {
-  def ~[U](q: Parser[U]): Parser[(T, U)] = {
+  def ~[U](q: => Parser[U]): Parser[(T, U)] = {
     // FIXME[1](rexim): is it possible not to keep a variable like this?
     val p = this
     new Parser[(T, U)] {
@@ -22,7 +22,7 @@ trait Parser[+T] extends (String => ParseResult[T]) {
     }
   }
 
-  def |[U >: T](q: Parser[U]): Parser[U] = {
+  def |[U >: T](q: => Parser[U]): Parser[U] = {
     // See FIXME[1]
     val p = this
 
@@ -76,7 +76,7 @@ trait Parser[+T] extends (String => ParseResult[T]) {
       case (x, xs) => x :: xs
     }
 
-  def ^^[U](f: (T => U)): Parser[U] = {
+  def ^^[U](f: T => U): Parser[U] = {
     // See FIXME[1]
     val p = this
     new Parser[U] {
@@ -91,12 +91,12 @@ trait Parser[+T] extends (String => ParseResult[T]) {
     }
   }
 
-  def ~>[U](q: Parser[U]): Parser[U] =
+  def ~>[U](q: => Parser[U]): Parser[U] =
     this ~ q ^^ {
       case (_, result) => result
     }
 
-  def <~[U](q: Parser[U]): Parser[T] =
+  def <~[U](q: => Parser[U]): Parser[T] =
     this ~ q ^^ {
       case (result, _) => result
     }
