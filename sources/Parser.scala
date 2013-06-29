@@ -1,6 +1,6 @@
 import scala.language.postfixOps
 
-trait Parser[T] extends (String => ParseResult[T]) {
+trait Parser[+T] extends (String => ParseResult[T]) {
   def ~[U](q: Parser[U]): Parser[(T, U)] = {
     // FIXME[1](rexim): is it possible not to keep a variable like this?
     val p = this
