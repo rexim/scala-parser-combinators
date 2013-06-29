@@ -22,6 +22,19 @@ trait Parser[T] extends (String => ParseResult[T]) {
     }
   }
 
+  def |[U >: T](q: Parser[U]): Parser[U] = {
+    // See FIXME[1]
+    val p = this
+
+    new Parser[U] {
+      override def apply(input: String) =
+        p(input) match {
+          case ParseSuccess(value, restInput) => ParseSuccess(value, restInput)
+          case ParseFailure(_, _) => q(input)
+        }
+    }
+  }
+
   def ?(): Parser[Option[T]] = {
     // See FIXME[1]
     val p = this
