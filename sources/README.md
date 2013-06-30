@@ -13,5 +13,5 @@ scala> Calculator("(245 + 283) / 2 + (200 - 45) / 5")
 scala> Calculator("(4 + 3))")
 Error: End of string expected but `)' found
 
-scala>
+scala> :quit
 ```
