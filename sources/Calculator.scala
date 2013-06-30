@@ -1,4 +1,4 @@
-// This example is taken from here:
+// This example was taken and ported from here:
 // http://www.scala-lang.org/api/current/index.html#scala.util.parsing.combinator.RegexParsers
 import scala.language.postfixOps
 
