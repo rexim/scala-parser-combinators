@@ -22,7 +22,13 @@ object Calculator extends CharParsers {
 
   def apply(input: String) =
     expr(input) match {
-      case ParseSuccess(result, _) => println(s"=> $result")
+      case ParseSuccess(result, restInput) => {
+        val trimmedInput = restInput.dropWhile(_.isSpaceChar)
+        if(trimmedInput.isEmpty)
+          println(s"=> $result")
+        else
+          println(s"Error: End of string expected but `${trimmedInput.head}' found")
+      }
       case ParseFailure(message, _) => println(s"Error: $message")
     }
 }
