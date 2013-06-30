@@ -2,32 +2,88 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T2A]{fontenc}
 \usepackage[russian,english]{babel}
+\usepackage{graphicx}
+\usepackage{listings}
 
 \usetheme{Warsaw}
 
 \title{Комбинаторы парсеров}
 \author{Кутепов~А.И.}
-\date{}
+\date{2013}
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+%% \setbeamercovered{transparent}
 
 \begin{document}
-  \frame{\titlepage}
 
-  \begin{frame}
-    \frametitle{This is the first slide}
-    Hello, World
-    \begin{itemize}
-    \item test1
-    \item test2
-    \item test3
-    \end{itemize}
-  \end{frame}
+\begin{frame}
+  \titlepage
+\end{frame}
 
-  \begin{frame}
-    \frametitle{This is the second slide}
-    \framesubtitle{Русский язык}
-    \begin{equation}
-      f(x) = \sum_{i = 1}^{10} \left(\frac{1}{i + 5} + \frac{2}{i +
-        20}\right)
-    \end{equation}
-  \end{frame}
+\begin{frame}
+  \tableofcontents
+\end{frame}
+
+\section{Теория}
+
+\begin{frame}
+  \begin{itemize}
+  \item herp \pause
+  \item derp
+  \end{itemize}
+\end{frame}
+
+\section{Комбинаторы парсеров}
+
+\begin{frame}[fragile]
+  \frametitle{Парсер}
+  \begin{semiverbatim}
+    trait Parser[+T]\pause{} extends Input => ParserResult[T]
+  \end{semiverbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Парсер}
+  \begin{semiverbatim}
+    trait Parser[+T] extends {\color{red}String} => ParserResult[T]
+  \end{semiverbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Результат}
+  \begin{semiverbatim}
+    trait ParseResult[+T]
+    \pause
+    case class Success[+T](value: T, input: String)
+      extends ParseResult[T]
+    \pause
+    case class Failure[+T](message: String, input: String) 
+      extends ParseResult[T]
+  \end{semiverbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Пример использования}
+  \begin{semiverbatim}
+    \uncover<1->{def IntParser: Parser[Int]
+    \uncover<2->{IntParser("10")\uncover<3->{ match \{
+      \uncover<4->{case Success(value, _) => handle(value)}
+      \uncover<5->{case Failure(message, _) => println(message)}
+    \}}}}
+  \end{semiverbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Комбинатор парсеров}
+  \begin{semiverbatim}
+    \uncover<1->{def combine\uncover<2->{[T](\uncover<3->{p1: Parser[T],} \uncover<4->{p2: Parser[T]})}\uncover<5->{: Parser[T]}}
+  \end{semiverbatim}
+\end{frame}
+
 \end{document}
