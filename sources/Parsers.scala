@@ -2,27 +2,30 @@ import scala.language.implicitConversions
 import scala.language.postfixOps
 
 trait CharParsers {
-  implicit def OneLetter(x: Char): Parser[Char] = new Parser[Char] {
-    override def apply(input: String) = {
-      val trimmedInput = input.dropWhile(_.isSpaceChar)
-      if(trimmedInput.isEmpty) {
-        ParseFailure(s"`$x' expected but found nothing", trimmedInput)
-      } else if(trimmedInput.head == x) {
-        ParseSuccess(x, trimmedInput.tail)
-      } else {
-        ParseFailure(s"`$x' expected but `${trimmedInput.head}' found", trimmedInput)
-      }
-    }
-  }
+  implicit def OneChar(x: Char): Parser[Char] =
+    rep(elem(' ')) ~> elem(x)
 
-  implicit def OneOfLetters(xs: String): Parser[Char] =
+  implicit def OneOfChars(xs: String): Parser[Char] =
     if(!xs.isEmpty) {
-      xs.tail.foldLeft(xs.head: Parser[Char]) {
-        case (acc, x) => acc | x
+      val p = xs.tail.foldLeft(elem(xs.head)) {
+        case (acc, x) => acc | elem(x)
       }
+      rep(elem(' ')) ~> p
     } else {
-      sys.error("String2CharParser: string is empty")
+      sys.error("OneOfChars: string is empty")
     }
 
   def rep[T](p: Parser[T]): Parser[List[T]] = p *
+
+  def elem(x: Char) = new Parser[Char] {
+    override def apply(input: String) = {
+      if(input.isEmpty) {
+        ParseFailure(s"`$x' expected but found nothing", input)
+      } else if(input.head == x) {
+        ParseSuccess(x, input.tail)
+      } else {
+        ParseFailure(s"`$x' expected but `${input.head}' found", input)
+      }
+    }
+  }
 }
