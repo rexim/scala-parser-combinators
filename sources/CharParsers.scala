@@ -20,11 +20,11 @@ trait CharParsers {
   def elem(x: Char) = new Parser[Char] {
     override def apply(input: String) = {
       if(input.isEmpty) {
-        ParseFailure(s"`$x' expected but found nothing", input)
+        Failure(s"`$x' expected but found nothing", input)
       } else if(input.head == x) {
-        ParseSuccess(x, input.tail)
+        Success(x, input.tail)
       } else {
-        ParseFailure(s"`$x' expected but `${input.head}' found", input)
+        Failure(s"`$x' expected but `${input.head}' found", input)
       }
     }
   }

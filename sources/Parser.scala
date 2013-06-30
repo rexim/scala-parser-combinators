@@ -6,17 +6,17 @@ trait Parser[+T] extends (String => ParseResult[T]) {
     new Parser[(T, U)] {
       override def apply(input: String) =
         p(input) match {
-          case ParseSuccess(value1, nextInput) =>
+          case Success(value1, nextInput) =>
             q(nextInput) match {
-              case ParseSuccess(value2, restInput) =>
-                ParseSuccess((value1, value2), restInput)
+              case Success(value2, restInput) =>
+                Success((value1, value2), restInput)
 
-              case ParseFailure(errorMessage, restInput) =>
-                ParseFailure(errorMessage, restInput)
+              case Failure(errorMessage, restInput) =>
+                Failure(errorMessage, restInput)
             }
 
-          case ParseFailure(errorMessage, restInput) =>
-            ParseFailure(errorMessage, restInput)
+          case Failure(errorMessage, restInput) =>
+            Failure(errorMessage, restInput)
         }
     }
   }
@@ -37,8 +37,8 @@ trait Parser[+T] extends (String => ParseResult[T]) {
     new Parser[U] {
       override def apply(input: String) =
         p(input) match {
-          case ParseSuccess(value, restInput) => ParseSuccess(value, restInput)
-          case ParseFailure(_, _) => q(input)
+          case Success(value, restInput) => Success(value, restInput)
+          case Failure(_, _) => q(input)
         }
     }
   }
@@ -48,11 +48,11 @@ trait Parser[+T] extends (String => ParseResult[T]) {
     new Parser[Option[T]] {
       override def apply(input: String) =
         p(input) match {
-          case ParseSuccess(value, restInput) =>
-            ParseSuccess(Some(value), restInput)
+          case Success(value, restInput) =>
+            Success(Some(value), restInput)
 
-          case ParseFailure(_, restInput) =>
-            ParseSuccess(None, restInput)
+          case Failure(_, restInput) =>
+            Success(None, restInput)
         }
     }
   }
@@ -62,17 +62,17 @@ trait Parser[+T] extends (String => ParseResult[T]) {
     new Parser[List[T]] {
       override def apply(input: String) =
         p(input) match {
-          case ParseSuccess(value, nextInput) =>
+          case Success(value, nextInput) =>
             apply(nextInput) match {
-              case ParseSuccess(values, restInput) =>
-                ParseSuccess(value :: values, restInput)
+              case Success(values, restInput) =>
+                Success(value :: values, restInput)
 
-              case ParseFailure(_, restInput) =>
-                ParseSuccess(List(), restInput)
+              case Failure(_, restInput) =>
+                Success(List(), restInput)
             }
 
-          case ParseFailure(_, restInput) =>
-            ParseSuccess(List(), restInput)
+          case Failure(_, restInput) =>
+            Success(List(), restInput)
         }
     }
   }
@@ -87,11 +87,11 @@ trait Parser[+T] extends (String => ParseResult[T]) {
     new Parser[U] {
       override def apply(input: String) =
         p(input) match {
-          case ParseSuccess(value, restInput) =>
-            ParseSuccess(f(value), restInput)
+          case Success(value, restInput) =>
+            Success(f(value), restInput)
 
-          case ParseFailure(message, restInput) =>
-            ParseFailure(message, restInput)
+          case Failure(message, restInput) =>
+            Failure(message, restInput)
         }
     }
   }
