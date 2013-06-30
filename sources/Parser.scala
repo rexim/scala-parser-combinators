@@ -21,6 +21,16 @@ trait Parser[+T] extends (String => ParseResult[T]) {
     }
   }
 
+  def ~>[U](q: => Parser[U]): Parser[U] =
+    this ~ q ^^ {
+      case (_, result) => result
+    }
+
+  def <~[U](q: => Parser[U]): Parser[T] =
+    this ~ q ^^ {
+      case (result, _) => result
+    }
+
   def |[U >: T](q: => Parser[U]): Parser[U] = {
     val p = this
 
@@ -85,14 +95,4 @@ trait Parser[+T] extends (String => ParseResult[T]) {
         }
     }
   }
-
-  def ~>[U](q: => Parser[U]): Parser[U] =
-    this ~ q ^^ {
-      case (_, result) => result
-    }
-
-  def <~[U](q: => Parser[U]): Parser[T] =
-    this ~ q ^^ {
-      case (result, _) => result
-    }
 }
