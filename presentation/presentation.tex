@@ -8,6 +8,7 @@
 \usetheme{Warsaw}
 
 \title{Комбинаторы парсеров}
+\subtitle{на примере языка Scala}
 \author{Кутепов~А.И.}
 \date{2013}
 
@@ -17,8 +18,6 @@
     \tableofcontents[currentsection]
   \end{frame}
 }
-
-%% \setbeamercovered{transparent}
 
 \begin{document}
 
@@ -30,60 +29,12 @@
   \tableofcontents
 \end{frame}
 
-\section{Теория}
+\section{Что это такое?}
 
-\begin{frame}
-  \begin{itemize}
-  \item herp \pause
-  \item derp
-  \end{itemize}
-\end{frame}
+\section{Зачем это нужно?}
 
-\section{Комбинаторы парсеров}
+\section{Как это использовать?}
 
-\begin{frame}[fragile]
-  \frametitle{Парсер}
-  \begin{semiverbatim}
-    trait Parser[+T]\pause{} extends Input => ParserResult[T]
-  \end{semiverbatim}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Парсер}
-  \begin{semiverbatim}
-    trait Parser[+T] extends {\color{red}String} => ParserResult[T]
-  \end{semiverbatim}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Результат}
-  \begin{semiverbatim}
-    trait ParseResult[+T]
-    \pause
-    case class Success[+T](value: T, input: String)
-      extends ParseResult[T]
-    \pause
-    case class Failure[+T](message: String, input: String) 
-      extends ParseResult[T]
-  \end{semiverbatim}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Пример использования}
-  \begin{semiverbatim}
-    \uncover<1->{def IntParser: Parser[Int]
-    \uncover<2->{IntParser("10")\uncover<3->{ match \{
-      \uncover<4->{case Success(value, _) => handle(value)}
-      \uncover<5->{case Failure(message, _) => println(message)}
-    \}}}}
-  \end{semiverbatim}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Комбинатор парсеров}
-  \begin{semiverbatim}
-    \uncover<1->{def combine\uncover<2->{[T](\uncover<3->{p1: Parser[T],} \uncover<4->{p2: Parser[T]})}\uncover<5->{: Parser[T]}}
-  \end{semiverbatim}
-\end{frame}
+\section{Как это работает?}
 
 \end{document}
