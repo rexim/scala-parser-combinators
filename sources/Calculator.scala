@@ -1,7 +1,8 @@
 import scala.language.postfixOps
 
-/** This example was taken and ported from here:
-  * http://www.scala-lang.org/api/current/index.html#scala.util.parsing.combinator.RegexParsers
+/** This example was taken from
+  * [[http://www.scala-lang.org/api/current/index.html#scala.util.parsing.combinator.RegexParsers here]]
+  * and adapted for the library.
   */
 object Calculator extends CharParsers {
   def digit: Parser[Char] = "0123456789"
