@@ -147,4 +147,32 @@ def <\mytilde[T, U](p: Parser[T], q: Parser[U]): Parser[T]
   \end{semiverbatim}
 \end{frame}
 
+\begin{frame}[fragile]
+  \frametitle{Альтернативная композиция}
+  \begin{semiverbatim}
+def |[U >: T](p: Parser[T], q: Parser[U]): Parser[U]
+\pause
+(num | word) : Parser[Any]
+\pause
+(num | word)("hello") == Success("hello", "")
+(num | word)("10") == Success(10, "")
+  \end{semiverbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Повторения}
+  \begin{semiverbatim}
+def *[T](p: Parser[T]): Parser[List[T]]
+\pause
+(num *) : Parser[List[Int]]
+\pause
+(num *)("10 20 40 hello") == Success(List(10, 20, 30),
+                                     " hello")
+  \end{semiverbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Применение функции}
+\end{frame}
+
 \end{document}
