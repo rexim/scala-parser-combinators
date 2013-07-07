@@ -27,12 +27,6 @@
 \end{frame}
 
 \begin{frame}
-  \tableofcontents
-\end{frame}
-
-\section{Что это такое?}
-
-\begin{frame}
   \frametitle{Парсинг}
   \pause
   \begin{block}{Определение}
@@ -41,48 +35,32 @@
     данных.
   \end{block}
   \pause
-  \includegraphics[scale=0.50]{images/parsing-example.eps}
+  \includegraphics{images/parsing-example.eps}
 \end{frame}
 
 \begin{frame}
   \frametitle{Парсер}
+  \pause
   \begin{block}{Определение}
     \textit{Парсер} --- функция, которая осуществляет процесс
     \textit{парсинга}.
   \end{block}
+  %% FIXME(rexim): not ready yet
+  %% \pause
+  %% \includegraphics{images/parser-example.eps}
 \end{frame}
 
 \begin{frame}
   \frametitle{Комбинатор парсеров}
+  \pause
   \begin{block}{Определение}
     \textit{Комбинатор парсеров} --- функция высшего порядка, которая
     в качестве параметров принимает один или более \textit{парсеров} и
     конструирует на их основе новый \textit{парсер}.
   \end{block}
+  %% FIXME(rexim): not ready yet.
+  %% \pause
+  %% \includegraphics{images/paser-combinator-example.ep}
 \end{frame}
-
-\section{Зачем это нужно?}
-
-\begin{frame}
-  \includegraphics[scale=0.80]{images/single-parser-example.eps}
-\end{frame}
-
-\begin{frame}
-  \includegraphics[scale=0.50]{images/combined-parsers-example-1.eps}
-\end{frame}
-
-\begin{frame}
-  \includegraphics[scale=0.50]{images/combined-parsers-example-2.eps}
-\end{frame}
-
-\begin{frame}
-  \includegraphics[scale=0.50]{images/combined-parsers-example-3.eps}
-\end{frame}
-
-\begin{frame}
-  \includegraphics[scale=0.50]{images/combined-parsers-example.eps}
-\end{frame}
-
-\section{Как это работает?}
 
 \end{document}
