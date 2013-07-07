@@ -15,3 +15,6 @@ Error: End of string expected but `)' found
 
 scala> :quit
 ```
+
+To generate API docs enter `$ sbt docs`. The generated docs can be
+found at `target/scala-<version>/api/`.
