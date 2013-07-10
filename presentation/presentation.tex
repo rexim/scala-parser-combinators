@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{epstopdf}
+\usepackage{hyperref}
 
 \usetheme{Warsaw}
 
@@ -120,72 +121,122 @@ num(\replacement{"10"}) : ParseResult[Int]
 \begin{frame}[fragile]
   \frametitle{Последовательная композиция}
   \begin{semiverbatim}
-\keyword{def} \mytilde[T, U](p: Parser[U], q: Parser[U]): Parser[(T, U)]
+\keyword{def} seq[T, U](p: Parser[T], q: Parser[U]): Parser[(T, U)]
 \pause
 \keyword{def} num : Parser[Int]
 \keyword{def} word : Parser[String]
 \pause
-(num \mytilde word)\pause : Parser[(Int, String)]
+seq(num, word)\pause : Parser[(Int, String)]
 \pause
-(num \mytilde word)("2 hello")\pause == Success((2, "hello"), "")
+seq(num, word)("2 hello")\pause == Success((2, "hello"), "")
 \pause
-(num \mytilde word)("hello 2")\pause == Failure("<error message>",
-                                    "hello 2")
-  \end{semiverbatim}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Последовательная композиция}
-  \begin{semiverbatim}
-\keyword{def} num : Parser[Int]
-\keyword{def} word : Parser[String]
+seq(num, word)("hello 2")\pause == Failure("<error message>",
+                                     "hello 2")
 \pause
-\keyword{def} \mytilde>[T, U](p: Parser[T], q: Parser[U]): Parser[U]
-\keyword{def} <\mytilde[T, U](p: Parser[T], q: Parser[U]): Parser[T]
-\pause
-(num \mytilde> word) : Parser[String]
-(num <\mytilde word) : Parser[Int]
-\pause
-(num \mytilde> word <\mytilde num)\pause : Parser[String]
-\pause
-(num \mytilde> word <\mytilde num)("2 hello 3")\pause == Success("hello", ")
+num \mytilde word
   \end{semiverbatim}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Альтернативная композиция}
   \begin{semiverbatim}
-\keyword{def} |[U >: T](p: Parser[T], q: Parser[U]): Parser[U]
+\keyword{def} alt[T, U >: T](p: Parser[T], q: Parser[U]): Parser[U]
 \pause
-(num | word) : Parser[Any]
+alt(num, word) : Parser[Any]
 \pause
-(num | word)("hello") == Success("hello", "")
-(num | word)("10") == Success(10, "")
+alt(num, word)("hello") == Success("hello", "")
+alt(num, word)("10") == Success(10, "")
+\pause
+num | word
   \end{semiverbatim}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Повторения}
   \begin{semiverbatim}
-\keyword{def} *[T](p: Parser[T]): Parser[List[T]]
+\keyword{def} rep[T](p: Parser[T]): Parser[List[T]]
 \pause
-(num *) : Parser[List[Int]]
+rep(num) : Parser[List[Int]]
 \pause
-(num *)("10 20 40 hello") == Success(List(10, 20, 30),
-                                     " hello")
+rep(num)("10 20 40 hello") == Success(List(10, 20, 30),
+                                      " hello")
+\pause
+num *
   \end{semiverbatim}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Применение функции}
   \begin{semiverbatim}
-\keyword{def} ^^[T, U](p: Parser[T], f: T => U): Parser[U]\pause
+\keyword{def} app[T, U](p: Parser[T], f: T => U): Parser[U]\pause
 
-(word ^^ \{ _.toUpperCase \})\pause : Parser[String]\pause
+app(word, \{_.toUpperCase\})\pause : Parser[String]\pause
 
-(word ^^ \{ _.toUpperCase \})("hello") == Success("HELLO",
-                                                "")
+app(word, \{_.toUpperCase\})("hello") == Success("HELLO",
+                                               "")
+\pause
+num \mytilde word ^^ \{
+  case (_, x) => x.toUpperCase
+\}
   \end{semiverbatim}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Реализация комбинаторов парсеров}
+  \includegraphics[scale=0.04]{images/octocat.png} \Large \textcolor{blue}{github.com{\huge /rexim/}scala-parser-combinators}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Calculator}
+\scriptsize
+  \begin{semiverbatim}
+\keyword{object} Calculator \keyword{extends} CharParsers \{
+  \keyword{def} digit: Parser[Char] = "0123456789"
+  \keyword{def} number: Parser[Int] = (digit +) ^^ \{ _.mkString.toInt \}
+  \keyword{def} factor: Parser[Int] = number | '(' ~> expr <~ ')'
+  \keyword{def} term: Parser[Int] = factor ~ rep('*' ~ factor | '/' ~ factor) ^^ \{
+    \keyword{case} (number, list) => list.foldLeft(number) \{
+      \keyword{case} (x, ('*', y)) => x * y
+      \keyword{case} (x, ('/', y)) => x / y
+    \}
+  \}
+  \keyword{def} expr: Parser[Int] = term ~ rep('+' ~ term | '-' ~ term) ^^ \{
+    \keyword{case} (number, list) => list.foldLeft(number) \{
+      \keyword{case} (x, ('+', y)) => x + y
+      \keyword{case} (x, ('-', y)) => x - y
+    \}
+  \}
+  \keyword{def} apply(input: String) { ... }
+\}
+  \end{semiverbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Calculator}
+  \begin{semiverbatim}
+scala>\pause Calculator("2 + 2")\pause
+=> 4
+
+scala>\pause Calculator("(245 + 283) / 2 + (200 - 45) / 5")\pause
+=> 295
+
+scala> \pause{}Calculator("(4 + 3))")\pause
+Error: End of string expected but `)' found
+  \end{semiverbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Стандартные комбинаторы парсеров}
+  \Large
+  \begin{semiverbatim}
+\keyword{import} scala.util.parsing.combinator._
+  \end{semiverbatim}
+\end{frame}
+
+\begin{frame}
+  \begin{center}
+    \Huge Вопросы
+  \end{center}
 \end{frame}
 
 \end{document}
