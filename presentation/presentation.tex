@@ -22,6 +22,8 @@
 %% }
 
 \newcommand{\mytilde}{$\sim$}
+\newcommand{\keyword}[1]{\textcolor{blue}{\textsl{#1}}}
+\newcommand{\replacement}[1]{\textcolor{red}{\textsl{#1}}}
 
 \begin{document}
 
@@ -79,49 +81,55 @@
 \begin{frame}[fragile]
   \frametitle{Parser}
   \begin{semiverbatim}
-trait Parser[+T]\pause{} extends Input => ParseResult[T]\pause{} \{
-  def apply(input: Input): ParseResult[T]
-\}
+\keyword{trait} Parser[+T]\pause{} \keyword{extends} Input => ParseResult[T]\pause{} \{
+  \keyword{def} apply(input: Input): ParseResult[T]
+\}\pause
+
+\keyword{def} num: Parser[Int]\pause
+
+num(\keyword{new} Input("10")) : ParseResult[Int]
   \end{semiverbatim}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Parser}
   \begin{semiverbatim}
-trait Parser[+T] extends{\color{red} String} => ParseResult[T] \{
-  def apply(input:{\color{red} String}): ParseResult[T]
+\keyword{trait} Parser[+T] \keyword{extends} \replacement{String} => ParseResult[T] \{
+  \keyword{def} apply(input: \replacement{String}): ParseResult[T]
 \}
+
+\keyword{def} num: Parser[Int]
+
+num(\replacement{"10"}) : ParseResult[Int]
   \end{semiverbatim}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Parse Result}
   \begin{semiverbatim}
-trait ParseResult[+T]
+\keyword{trait} ParseResult[+T]
 \pause
-case class
-  Success[+T](value: T, input: String)
-extends ParseResult[T]
+\keyword{case class} Success[+T](value: T, input: String)
+  \keyword{extends} ParseResult[T]
 \pause
-case class
-  Failure[+T](message: String, input: String)
-extends ParseResult[T]
+\keyword{case class} Failure[+T](message: String, input: String)
+  \keyword{extends} ParseResult[T]
   \end{semiverbatim}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Последовательная композиция}
   \begin{semiverbatim}
-def \mytilde[T, U](p: Parser[U], q: Parser[U]): Parser[(T, U)]
+\keyword{def} \mytilde[T, U](p: Parser[U], q: Parser[U]): Parser[(T, U)]
 \pause
-def num : Parser[Int]
-def word : Parser[String]
+\keyword{def} num : Parser[Int]
+\keyword{def} word : Parser[String]
 \pause
 (num \mytilde word)\pause : Parser[(Int, String)]
 \pause
 (num \mytilde word)("2 hello")\pause == Success((2, "hello"), "")
 \pause
-(num \mytilde word)("hello 2")\pause == Failure("<message>",
+(num \mytilde word)("hello 2")\pause == Failure("<error message>",
                                     "hello 2")
   \end{semiverbatim}
 \end{frame}
@@ -129,11 +137,11 @@ def word : Parser[String]
 \begin{frame}[fragile]
   \frametitle{Последовательная композиция}
   \begin{semiverbatim}
-def num : Parser[Int]
-def word : Parser[String]
+\keyword{def} num : Parser[Int]
+\keyword{def} word : Parser[String]
 \pause
-def \mytilde>[T, U](p: Parser[T], q: Parser[U]): Parser[U]
-def <\mytilde[T, U](p: Parser[T], q: Parser[U]): Parser[T]
+\keyword{def} \mytilde>[T, U](p: Parser[T], q: Parser[U]): Parser[U]
+\keyword{def} <\mytilde[T, U](p: Parser[T], q: Parser[U]): Parser[T]
 \pause
 (num \mytilde> word) : Parser[String]
 (num <\mytilde word) : Parser[Int]
@@ -141,16 +149,13 @@ def <\mytilde[T, U](p: Parser[T], q: Parser[U]): Parser[T]
 (num \mytilde> word <\mytilde num)\pause : Parser[String]
 \pause
 (num \mytilde> word <\mytilde num)("2 hello 3")\pause == Success("hello", ")
-\pause
-(num \mytilde> word <\mytilde num)("hello 3")\pause == Failure("<message>",
-                                           "hello 3")
   \end{semiverbatim}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Альтернативная композиция}
   \begin{semiverbatim}
-def |[U >: T](p: Parser[T], q: Parser[U]): Parser[U]
+\keyword{def} |[U >: T](p: Parser[T], q: Parser[U]): Parser[U]
 \pause
 (num | word) : Parser[Any]
 \pause
@@ -162,7 +167,7 @@ def |[U >: T](p: Parser[T], q: Parser[U]): Parser[U]
 \begin{frame}[fragile]
   \frametitle{Повторения}
   \begin{semiverbatim}
-def *[T](p: Parser[T]): Parser[List[T]]
+\keyword{def} *[T](p: Parser[T]): Parser[List[T]]
 \pause
 (num *) : Parser[List[Int]]
 \pause
@@ -173,6 +178,14 @@ def *[T](p: Parser[T]): Parser[List[T]]
 
 \begin{frame}[fragile]
   \frametitle{Применение функции}
+  \begin{semiverbatim}
+\keyword{def} ^^[T, U](p: Parser[T], f: T => U): Parser[U]\pause
+
+(word ^^ \{ _.toUpperCase \})\pause : Parser[String]\pause
+
+(word ^^ \{ _.toUpperCase \})("hello") == Success("HELLO",
+                                                "")
+  \end{semiverbatim}
 \end{frame}
 
 \end{document}
