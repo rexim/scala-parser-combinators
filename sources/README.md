@@ -1,4 +1,4 @@
-# Simple implementation of parsing combinators #
+# Simple implementation of parser combinators #
 
 You'll need [sbt](http://www.scala-sbt.org/). I suppose you are at sources/ directory:
 ```
