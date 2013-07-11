@@ -170,10 +170,10 @@ num *
   \begin{semiverbatim}
 \keyword{def} app[T, U](p: Parser[T], f: T => U): Parser[U]\pause
 
-app(word, \{_.toUpperCase\})\pause : Parser[String]\pause
+app(word, _.toUpperCase)\pause : Parser[String]\pause
 
-app(word, \{_.toUpperCase\})("hello") == Success("HELLO",
-                                               "")
+app(word, _.toUpperCase)("hello") == Success("HELLO",
+                                             "")
 \pause
 num \mytilde word ^^ \{
   case (_, x) => x.toUpperCase
@@ -206,7 +206,7 @@ num \mytilde word ^^ \{
       \keyword{case} (x, ('-', y)) => x - y
     \}
   \}
-  \keyword{def} apply(input: String) { ... }
+  \keyword{def} apply(input: String) \{ ... \}
 \}
   \end{semiverbatim}
 \end{frame}
