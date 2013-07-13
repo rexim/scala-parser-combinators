@@ -9,7 +9,7 @@ Materials of [4geo](https://github.com/4geo/)'s seminar on "Parser Combinators".
 
 <table>
   <tr>
-    <td>![parser-example](https://raw.github.com/rexim/scala-parser-combinators/master/parser-example.png)</td>
-    <td>![combinator-example](https://raw.github.com/rexim/scala-parser-combinators/master/combinator-example.png)</td>
+    <td><img src="https://raw.github.com/rexim/scala-parser-combinators/master/parser-example.png" alt="parser-example" /></td>
+    <td><img src="https://raw.github.com/rexim/scala-parser-combinators/master/combinator-example.png" alt="combinator-example" /></td>
   </tr>
 </table>
