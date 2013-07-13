@@ -6,3 +6,5 @@ Materials of [4geo](https://github.com/4geo/)'s seminar on "Parser Combinators".
   russian.
 * sources/ — contains Scala sources of a simple implementation of
   parser combinators.
+
+![parser-example](https://raw.github.com/rexim/scala-parser-combinators/master/presentation/images/parser-example.svg)
